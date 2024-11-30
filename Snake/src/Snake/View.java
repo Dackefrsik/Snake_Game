@@ -25,7 +25,7 @@ public class View{
 	
 	Controller C;
 	
-	int boundsX, boundsY;
+	int boundsX = 150, boundsY = 150;
 	
 	Timer moveTimer;
 	
@@ -130,9 +130,6 @@ public class View{
 					break;
 			}
 		}
-		
-	
-		
 		
 		for (int i = 0; i < buttons.size(); i++) {
 			for(int j = 0; j < buttons.size(); j++) {
