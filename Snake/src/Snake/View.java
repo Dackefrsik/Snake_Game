@@ -25,7 +25,7 @@ public class View{
 	
 	Controller C;
 	
-	int boundsX = 150, boundsY = 150;
+	int boundsX = 140, boundsY = 160;
 	
 	Timer moveTimer;
 	
@@ -179,8 +179,20 @@ public class View{
 	public void newButton(){
 		Random rnRandom = new Random();
 		
-		int X = rnRandom.nextInt((250) + 1);
-		int y = rnRandom.nextInt((250) + 1);
+		int X = rnRandom.nextInt((250));
+		int y = rnRandom.nextInt((250));
+		
+		//Kollar så att värdet på X är delbart med 20
+		while(X%20 != 0) {
+			X = rnRandom.nextInt((250));
+		}
+		
+		//Kollar så att värdet på y är delbar med 20
+		while(y%20 !=0) {
+			y = rnRandom.nextInt((250));
+		}
+		
+		System.out.println(X + " " + y);
 		
 		newButton = new JButton();
 		newButton.setBackground(Color.green);
