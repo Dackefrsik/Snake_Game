@@ -13,7 +13,6 @@ public class Controller {
 		Controller c = new Controller(null, new Model());
 		
 		c.v = new View(c);
-		
 	}
  
 }

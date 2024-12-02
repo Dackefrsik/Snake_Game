@@ -2,6 +2,7 @@ package Snake;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -12,7 +13,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
@@ -106,9 +109,7 @@ public class View{
 				public void run() {
 					move();
 				}
-			}, 0, 500);
-			
-			
+			}, 0, 200);
 		}
 	}
 	
@@ -134,14 +135,14 @@ public class View{
 		for (int i = 0; i < buttons.size(); i++) {
 			for(int j = 0; j < buttons.size(); j++) {
 				if(buttons.get(i).getBounds().intersects(buttons.get(j).getBounds()) && j != i){
-					System.exit(0);
+					gameOver();
 				}
 			}
 			
 		}
 		
 		if(!Panel.getBounds().contains(Button.getBounds())) {
-			System.exit(0);
+			gameOver();
 		}
 		
 		if(Button.getBounds().intersects(newButton.getBounds())) {
@@ -192,13 +193,33 @@ public class View{
 			y = rnRandom.nextInt((250));
 		}
 		
+		
+		
 		System.out.println(X + " " + y);
 		
 		newButton = new JButton();
 		newButton.setBackground(Color.green);
 		newButton.setBounds(X, y, 20, 20);
-		Panel.add(newButton);
 		
+		
+		for(int i = 0; i < buttons.size(); i++) {
+			while(newButton.getBounds() == buttons.get(i).getBounds()) {
+				//Kollar så att värdet på X är delbart med 20
+				while(X%20 != 0) {
+					X = rnRandom.nextInt((250));
+				}
+				
+				//Kollar så att värdet på y är delbar med 20
+				while(y%20 !=0) {
+					y = rnRandom.nextInt((250));
+				}
+				
+				newButton.setBounds(X, y, 20, 20);
+
+			}
+		}
+		
+		Panel.add(newButton);
 		while (!Panel.getBounds().contains(newButton.getBounds())){
 			Panel.remove(newButton);
 			newButton = new JButton();
@@ -208,7 +229,65 @@ public class View{
 		}
 		
 		Frame.repaint();
+	}
+	
+	public void gameOver() {
+		moveTimer.cancel();
+		JDialog dialog = new JDialog();
+		JLabel label = new JLabel("O no! You loss!");
+		JLabel label2 = new JLabel("Snake became " + buttons.size() + " block long");
+		JButton restartButton = new JButton("Restart");
+		JButton closeButton = new JButton("Close");
+		JPanel panel = new JPanel();
 		
+		panel.add(label);
+		panel.add(label2);
+		panel.add(restartButton);
+		panel.add(closeButton);
+		
+		restartButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.setVisible(false);
+				Panel.remove(Button);
+				Panel.add(Button);
+				Panel.remove(newButton);
+				Button.setBounds(140, 140, 20, 20);
+				boundsX = 140;
+				boundsY = 160;
+				
+				for(int i = 1; i < buttons.size(); i++) {
+					buttons.get(i).setVisible(false);
+				}
+				
+				newButton();
+				
+				buttons.removeAll(buttons);
+				buttons.add(Button);
+				
+				moveTimer = null;
+				startTimer();
+			}
+		});
+		
+		closeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+				
+			}
+		});
+		
+		dialog.add(panel);
+		dialog.setSize(170,150);
+		dialog.setResizable(false);
+		dialog.setAlwaysOnTop(true);
+		dialog.setModal(true);
+		dialog.setUndecorated(true);
+		dialog.setLocationRelativeTo(Frame);
+		dialog.setVisible(true);
 	}
 }
 
