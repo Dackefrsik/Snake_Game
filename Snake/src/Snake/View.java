@@ -32,18 +32,18 @@ public class View{
 	
 	Timer moveTimer;
 	
-	String changeString;
+	String changeString = "right";
 	
 	public View(Controller C) {
 		this.C = C;
 		Button = new JButton();
 		Button.setBackground(new Color(128, 0, 128));
-		Button.setBounds(150, 150, 20, 20);
+		Button.setSize(20, 20);
 		Button.setFocusable(false);
 		
 		Panel = new JPanel(new BorderLayout());
 		Panel.setLayout(null);
-		Panel.add(Button);
+		
 		
 		buttons.add(Button);
 		
@@ -51,10 +51,12 @@ public class View{
 		Frame.add(Panel);
 		Frame.setTitle("Snake");
 		Frame.setSize(300, 300);
-		Frame.setLocation(400,400);
+		Frame.setLocation(300,500);
 		Frame.setResizable(false);
 		Frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Frame.setVisible(true);
+		
+		
 		
 		Frame.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
@@ -90,8 +92,8 @@ public class View{
 		});
 		
 		Frame.setFocusable(true);
-        Frame.requestFocusInWindow();
-		
+        //Frame.requestFocusInWindow();
+		startGame();
 		newButton();
 		startTimer();
 		
@@ -145,7 +147,7 @@ public class View{
 			gameOver();
 		}
 		
-		if(Button.getBounds().intersects(newButton.getBounds())) {
+		if(newButton != null && Button.getBounds().intersects(newButton.getBounds())) {
 			Panel.remove(newButton);
 			Panel.repaint();
 			newBodyButton = new JButton();
@@ -172,11 +174,9 @@ public class View{
 		
 		buttons.get(0).setLocation(boundsX, boundsY);
 		Panel.repaint();
-		
-	
+			
 	}
 		
-
 	public void newButton(){
 		Random rnRandom = new Random();
 		
@@ -192,8 +192,6 @@ public class View{
 		while(y%20 !=0) {
 			y = rnRandom.nextInt((250));
 		}
-		
-		
 		
 		System.out.println(X + " " + y);
 		
@@ -277,6 +275,37 @@ public class View{
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 				
+			}
+		});
+		
+		dialog.add(panel);
+		dialog.setSize(170,150);
+		dialog.setResizable(false);
+		dialog.setAlwaysOnTop(true);
+		dialog.setModal(true);
+		dialog.setUndecorated(true);
+		dialog.setLocationRelativeTo(Frame);
+		dialog.setVisible(true);
+	}
+	
+	public void startGame() {
+		JDialog dialog = new JDialog();
+		JLabel label = new JLabel("Snake the Game");
+		JButton startButton = new JButton("Start Game");
+		JPanel panel = new JPanel();
+		
+		panel.add(label);
+		panel.add(startButton);
+		
+		startButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.setVisible(false);
+				Panel.add(Button);
+				move();
+				moveTimer = null;
+				startTimer();
 			}
 		});
 		
