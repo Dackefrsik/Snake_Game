@@ -1,6 +1,7 @@
 package Snake;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,8 @@ public class View{
 	Controller C;
 		
 	Timer moveTimer;
+	ArrayList<Integer> checkX = new ArrayList<>();
+	ArrayList<Integer> checkY = new ArrayList<>();
 		
 	public View(Controller C) {
 		this.C = C;
@@ -164,32 +167,38 @@ public class View{
 		Panel.repaint();
 			
 	}
-		
+	
 	public void newButton(){
+		
+		checkX.removeAll(checkX);
+		checkY.removeAll(checkY);
+		
+		for(int i = 0; i < 300; i++) {
+			if(i % 20 == 0) {
+				checkX.add(i);
+				checkY.add(i);
+			}
+		}
+		
 		Random rnRandom = new Random();
 		
-		int X = rnRandom.nextInt((250));
-		int y = rnRandom.nextInt((250));
+		int X,y;;
 		
 		//Kollar så att värdet på X är delbart med 20
-		while(X%20 != 0) {
+		do{
 			X = rnRandom.nextInt((250));
-		}
+		}while(X%20 != 0);
 		
 		//Kollar så att värdet på y är delbar med 20
-		while(y%20 !=0) {
+		do{
 			y = rnRandom.nextInt((250));
-		}
+		}while(y%20 !=0); 
 		
 		System.out.println(X + " " + y);
 		
-		newButton = new JButton();
-		newButton.setBackground(Color.green);
-		newButton.setBounds(X, y, 20, 20);
-		
-		
+		//Går igenom hela Listan
 		for(int i = 0; i < C.getButtons().size(); i++) {
-			while(newButton.getBounds() == C.getButtons().get(i).getBounds()) {
+				
 				//Kollar så att värdet på X är delbart med 20
 				while(X%20 != 0) {
 					X = rnRandom.nextInt((250));
@@ -200,16 +209,32 @@ public class View{
 					y = rnRandom.nextInt((250));
 				}
 				
-				newButton.setBounds(X, y, 20, 20);
+		}		
 
-			}
-		}
+		newButton = new JButton();
+		newButton.setBackground(Color.green);
+		newButton.setBounds(X, y, 20, 20);			
+		
+		checkX.add(X);
+		checkY.add(y);
+		
 		
 		Panel.add(newButton);
 		while (!Panel.getBounds().contains(newButton.getBounds())){
 			Panel.remove(newButton);
 			newButton = new JButton();
 			newButton.setBackground(Color.green);
+			
+			//Kollar så att värdet på X är delbart med 20
+			do{
+				X = rnRandom.nextInt((250));
+			}while(X%20 != 0) ;
+			
+			//Kollar så att värdet på y är delbar med 20
+			do{
+				y = rnRandom.nextInt((250));
+			}while(y%20 !=0);
+			
 			newButton.setBounds(X, y, 20, 20);
 			Panel.add(newButton);
 		}
