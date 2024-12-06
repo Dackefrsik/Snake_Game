@@ -58,24 +58,21 @@ public class View{
 			public void keyPressed(KeyEvent e) {
 				int KeyCode = e.getKeyCode();
 				
-				if(KeyCode == KeyEvent.VK_W) {
-						
+				if(KeyCode == KeyEvent.VK_W && !currentDirection.equals("down")) {
 					C.setChangeString("up");
-
-		
+					currentDirection = "up";
 				}
-				else if(KeyCode == KeyEvent.VK_S){
+				else if(KeyCode == KeyEvent.VK_S && !currentDirection.equals("up")){
 					C.setChangeString("down");
-
+					currentDirection = "down";
 				}
-				else if(KeyCode == KeyEvent.VK_A) {
+				else if(KeyCode == KeyEvent.VK_A && !currentDirection.equals("right")) {
 					C.setChangeString("left");
-
-					
+					currentDirection = "left";
 				}
-				else if(KeyCode == KeyEvent.VK_D) {
+				else if(KeyCode == KeyEvent.VK_D && !currentDirection.equals("left")) {
 					C.setChangeString("right");
-					
+					currentDirection = "right";
 				}
 			
 				move();
@@ -111,11 +108,6 @@ public class View{
 		if(C.getChangeString() != null) {
 			String changeString = C.getChangeString();
 			
-			int firstX = Button.getBounds().x;
-			int nextX = C.getButtons().get(1).getBounds().x;
-			int firstY = Button.getBounds().y;
-			int nextY = C.getButtons().get(1).getBounds().y;
-			
 				if(changeString.equals("up")) {
 					C.setBoundsYNegative(20);
 					
@@ -134,9 +126,7 @@ public class View{
 
 				}
 		}
-		
-		
-		
+				
 		if(C.getButtons().size() >= 1) {
 			
 			for(int i = C.getButtons().size() - 1;  i > 0; i--) {
@@ -152,15 +142,10 @@ public class View{
 		}
 		
 		
-		for (int i = 1; i < C.getButtons().size(); i++) {				
+		for (int i = 1; i < C.getButtons().size(); i++) {
 				if(Button.getBounds().intersects(C.getButtons().get(i).getBounds())) {
-					System.out.println("knock" + i);
 					gameOver();
 				}
-				else {
-					break;
-				}
-			
 		}
 		
 		if(!Panel.getBounds().contains(Button.getBounds())) {
@@ -179,53 +164,31 @@ public class View{
 			C.addButton(newBodyButton);
 			
 			newButton();
+		
+			Panel.repaint();
 		}
-		
-		
-		Panel.repaint();
-			
 	}
 	
 	public void newButton(){
 		
-		checkX.removeAll(checkX);
-		checkY.removeAll(checkY);
-		
-		for(int i = 0; i < 300; i++) {
-			if(i % 20 == 0) {
-				checkX.add(i);
-				checkY.add(i);
-			}
-		}
-		
 		Random rnRandom = new Random();
 		
-		int X,y;;
-		
-		//Kollar så att värdet på X är delbart med 20
-		do{
-			X = rnRandom.nextInt((250));
-		}while(X%20 != 0);
-		
-		//Kollar så att värdet på y är delbar med 20
-		do{
-			y = rnRandom.nextInt((250));
-		}while(y%20 !=0); 
+		int X,y;
+		X = rnRandom.nextInt((250) / 20) * 20;
+		y = rnRandom.nextInt((250) / 20) * 20;
 		
 		System.out.println(X + " " + y);
 		
 		//Går igenom hela Listan
 		for(int i = 0; i < C.getButtons().size(); i++) {
 				
-				//Kollar så att värdet på X är delbart med 20
-				while(X%20 != 0) {
-					X = rnRandom.nextInt((250));
-				}
+			
+			while(X == C.getButtons().get(i).getBounds().x && y == C.getButtons().get(i).getBounds().y) {
+				System.out.println("hej");
 				
-				//Kollar så att värdet på y är delbar med 20
-				while(y%20 !=0) {
-					y = rnRandom.nextInt((250));
-				}
+				X = rnRandom.nextInt((250) / 20) * 20;
+				y = rnRandom.nextInt((250) / 20) * 20;
+			}
 				
 		}		
 
@@ -233,35 +196,14 @@ public class View{
 		newButton.setBackground(Color.green);
 		newButton.setBounds(X, y, 20, 20);			
 		
-		checkX.add(X);
-		checkY.add(y);
-		
-		
 		Panel.add(newButton);
-		while (!Panel.getBounds().contains(newButton.getBounds())){
-			Panel.remove(newButton);
-			newButton = new JButton();
-			newButton.setBackground(Color.green);
-			
-			//Kollar så att värdet på X är delbart med 20
-			do{
-				X = rnRandom.nextInt((250));
-			}while(X%20 != 0) ;
-			
-			//Kollar så att värdet på y är delbar med 20
-			do{
-				y = rnRandom.nextInt((250));
-			}while(y%20 !=0);
-			
-			newButton.setBounds(X, y, 20, 20);
-			Panel.add(newButton);
-		}
 		
-		Frame.repaint();
+		Panel.repaint();
 	}
 	
 	public void gameOver() {
 		moveTimer.cancel();
+		currentDirection = "";
 		JDialog dialog = new JDialog();
 		JLabel label = new JLabel("O no! You loss!");
 		JLabel label2 = new JLabel("Snake became " + C.getButtons().size() + " block long");
