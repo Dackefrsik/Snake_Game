@@ -30,6 +30,8 @@ public class View{
 	Timer moveTimer;
 	ArrayList<Integer> checkX = new ArrayList<>();
 	ArrayList<Integer> checkY = new ArrayList<>();
+	
+	String currentDirection = "";
 		
 	public View(Controller C) {
 		this.C = C;
@@ -59,6 +61,7 @@ public class View{
 				if(KeyCode == KeyEvent.VK_W) {
 						
 					C.setChangeString("up");
+
 		
 				}
 				else if(KeyCode == KeyEvent.VK_S){
@@ -105,30 +108,58 @@ public class View{
 	
 	public void move() {
 
-		if(C.getChangeString() != "") {
-			C.getChangeString();
-				if(C.getChangeString() == "up") {
+		if(C.getChangeString() != null) {
+			String changeString = C.getChangeString();
+			
+			int firstX = Button.getBounds().x;
+			int nextX = C.getButtons().get(1).getBounds().x;
+			int firstY = Button.getBounds().y;
+			int nextY = C.getButtons().get(1).getBounds().y;
+			
+				if(changeString.equals("up")) {
 					C.setBoundsYNegative(20);
+					
 				}
-				else if(C.getChangeString() == "down") {
+				else if(changeString.equals("down")) {
 					C.setBoundsYPositive(20);
+
 				}
-				else if(C.getChangeString() == "left") {
+				else if(changeString.equals("left")) {
 					C.setBoundsXNegative(20);
+
+
 				}
-				else if(C.getChangeString() == "right") {
+				else if(changeString.equals("right")) {
 					C.setBoundsXPositive(20);
+
 				}
 		}
 		
 		
-		for (int i = 0; i < C.getButtons().size(); i++) {
-			for(int j = 0; j < C.getButtons().size(); j++) {
+		
+		if(C.getButtons().size() >= 1) {
+			
+			for(int i = C.getButtons().size() - 1;  i > 0; i--) {
+				JButton currentButton = C.getButtons().get(i);
+				JButton nextButton = C.getButtons().get(i - 1);
 				
-				if(C.getButtons().get(i).getBounds().intersects(C.getButtons().get(j).getBounds()) && j != i) {
+				currentButton.setLocation(nextButton.getLocation());
+			}
+		}
+		
+		if(C.getButtons().size() > 0) {
+			C.getButtons().get(0).setLocation(C.getBoundsX(), C.getBoundsY());
+		}
+		
+		
+		for (int i = 1; i < C.getButtons().size(); i++) {				
+				if(Button.getBounds().intersects(C.getButtons().get(i).getBounds())) {
+					System.out.println("knock" + i);
 					gameOver();
 				}
-			}
+				else {
+					break;
+				}
 			
 		}
 		
@@ -150,20 +181,7 @@ public class View{
 			newButton();
 		}
 		
-		if(C.getButtons().size() >= 1) {
-			
-			for(int i = C.getButtons().size() - 1;  i > 0; i--) {
-				JButton currentButton = C.getButtons().get(i);
-				JButton nextButton = C.getButtons().get(i - 1);
-				
-				currentButton.setLocation(nextButton.getLocation());
-			}
-		}
 		
-		
-		if(C.getButtons().size() > 0) {
-			C.getButtons().get(0).setLocation(C.getBoundsX(), C.getBoundsY());
-		}
 		Panel.repaint();
 			
 	}
