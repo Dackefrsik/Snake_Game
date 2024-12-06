@@ -184,7 +184,6 @@ public class View{
 				
 			
 			while(X == C.getButtons().get(i).getBounds().x && y == C.getButtons().get(i).getBounds().y) {
-				System.out.println("hej");
 				
 				X = rnRandom.nextInt((250) / 20) * 20;
 				y = rnRandom.nextInt((250) / 20) * 20;
